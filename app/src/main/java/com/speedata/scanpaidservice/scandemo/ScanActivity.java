@@ -1,16 +1,15 @@
 package com.speedata.scanpaidservice.scandemo;
 
 import android.content.Intent;
-import android.hardware.Camera;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.honeywell.barcode.HSMDecodeResult;
-import com.honeywell.barcode.HSMDecoder;
 import com.honeywell.plugins.decode.DecodeResultListener;
 import com.speedata.scanpaidservice.R;
 
@@ -24,13 +23,13 @@ import static com.honeywell.barcode.Symbology.EAN8;
 import static com.honeywell.barcode.Symbology.QR;
 
 
-
 public class ScanActivity extends AppCompatActivity implements DecodeResultListener, View.OnClickListener {//}, DecodeResultListener {
 
     private final static String TAG = "MainActivity";
     private TextView tvNextActivity;
     private TextView mTvShow;
     private TextView mTvTime;
+    private List<ScanBean> list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +43,13 @@ public class ScanActivity extends AppCompatActivity implements DecodeResultListe
         mTvShow = findViewById(R.id.tv_show);
         mTvTime = findViewById(R.id.tv_time);
 
+        mTvShow.setMovementMethod(ScrollingMovementMethod.getInstance());
+        mTvTime.setMovementMethod(ScrollingMovementMethod.getInstance());
+
+
         tvNextActivity = findViewById(R.id.tv_result);
         tvNextActivity.setOnClickListener(this);
     }
-
 
     @Override
     protected void onDestroy() {
@@ -55,7 +57,6 @@ public class ScanActivity extends AppCompatActivity implements DecodeResultListe
         System.out.println("onDestroy");
         HSMDecode.getInstance().removeHsmDecoder();
     }
-
 
     public void setSettings() {
         HSMDecode.getInstance().setHsmDecoder(this);
@@ -66,8 +67,6 @@ public class ScanActivity extends AppCompatActivity implements DecodeResultListe
         CameraManage.getInstance().setCameraManager(this);
 
     }
-
-    private List<ScanBean> list = new ArrayList<>();
 
     @Override
     public void onHSMDecodeResult(HSMDecodeResult[] hsmDecodeResults) {
@@ -90,6 +89,8 @@ public class ScanActivity extends AppCompatActivity implements DecodeResultListe
                     list.add(scanBean);
                     mTvShow.append(decodeDate + "\n");
                     mTvTime.append(longValue + "ms\n");
+                    tvNextActivity.setText("扫描数量" + list.size());
+                    tvNextActivity.setGravity(Gravity.CENTER_HORIZONTAL);
                 }
             }
 
@@ -102,7 +103,8 @@ public class ScanActivity extends AppCompatActivity implements DecodeResultListe
     /**
      * Called when a view has been clicked.
      *
-     * @param v The view that was clicked.
+     * @param v
+     *         The view that was clicked.
      */
     @Override
     public void onClick(View v) {

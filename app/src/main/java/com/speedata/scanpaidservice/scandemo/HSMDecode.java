@@ -43,7 +43,7 @@ public class HSMDecode {
             hsmDecoder.enableSound(true);
             hsmDecoder.enableAimer(true);
             hsmDecoder.setAimerColor(Color.RED);
-            hsmDecoder.setOverlayText("ceshi");
+//            hsmDecoder.setOverlayText("ceshi");
             hsmDecoder.setOverlayTextColor(Color.RED);
         }
 
