@@ -1,13 +1,10 @@
 package com.speedata.scanpaidservice.scandemo;
 
-import android.hardware.Camera;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.honeywell.barcode.HSMDecodeResult;
-import com.honeywell.barcode.HSMDecoder;
 import com.honeywell.plugins.decode.DecodeResultListener;
 import com.speedata.scanpaidservice.R;
 
@@ -46,7 +43,9 @@ public class ScanSecondActivity extends AppCompatActivity implements DecodeResul
         super.onStart();
         CameraManage.getInstance().getCameraManager().openCamera();
         HSMDecode.getInstance().getHsmDecoder().addResultListener(this);
-
+//        String decoderVersion = HSMDecode.getInstance().getHsmDecoder().getDecoderVersion();
+        String apiVersion = com.honeywell.barcode.HSMDecoder.getAPIVersion();
+        System.out.println("====version===="+apiVersion);
     }
 
     @Override
