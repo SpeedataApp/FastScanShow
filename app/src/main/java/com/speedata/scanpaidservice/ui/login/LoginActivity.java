@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.speedata.scanpaidservice.R;
 import com.speedata.scanpaidservice.mvp.MVPBaseActivity;
+import com.speedata.scanpaidservice.scandemo.HSMDecode;
 import com.speedata.scanpaidservice.ui.main.MainActivity;
 import com.speedata.scanpaidservice.ui.pay.PayActivity;
 import com.speedata.scanpaidservice.utils.DataCleanManager;
@@ -106,6 +107,7 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
         return verName;
     }
 
@@ -161,6 +163,7 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
             String timeByHour = DateUtils.getTimeByHour(48, DateUtils.FORMAT_YMD);
             Long aLong = DateUtils.convertTimeToLong(DateUtils.FORMAT_YMD, expireDate);
             Long time = DateUtils.convertTimeToLong(DateUtils.FORMAT_YMD, timeByHour);
+            System.out.println("===name==="+Thread.currentThread().getName());
             if (time > aLong) {
                 runOnUiThread(new Runnable() {
                     @Override
