@@ -4,10 +4,15 @@ package com.speedata.scanpaidservice.scandemo;
 import android.content.Context;
 import android.graphics.Color;
 import android.hardware.Camera;
+import android.util.Log;
 
 import com.honeywell.barcode.DecodeManager;
 import com.honeywell.barcode.HSMDecoder;
 import com.honeywell.plugins.PluginManager;
+
+import static com.honeywell.barcode.Symbology.CODE128;
+import static com.honeywell.barcode.Symbology.EAN13;
+import static com.honeywell.barcode.Symbology.EAN8;
 
 /**
  * 单例模式 HSMDecoder
@@ -43,15 +48,15 @@ public class HSMDecode {
             hsmDecoder.enableSound(true);
             hsmDecoder.enableAimer(true);
             hsmDecoder.setAimerColor(Color.RED);
-//            hsmDecoder.setOverlayText("ceshi");
+            hsmDecoder.setOverlayText("ceshi");
             hsmDecoder.setOverlayTextColor(Color.RED);
+            hsmDecoder.enableSymbology(EAN13);
+            hsmDecoder.enableSymbology(CODE128);
+            hsmDecoder.enableSymbology(EAN8);
+            hsmDecoder.enableFlashOnDecode(true);
+            Log.d("ZM", "toggleFlash");
         }
 
-    }
-
-    public void removeHsmDecoder() {
-        DecodeManager.destroyInstance();
-        hsmDecoder = null;
     }
 
 }

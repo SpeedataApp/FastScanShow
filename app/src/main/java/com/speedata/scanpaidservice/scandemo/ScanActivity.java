@@ -1,6 +1,7 @@
 package com.speedata.scanpaidservice.scandemo;
 
 import android.content.Intent;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
@@ -36,7 +37,6 @@ public class ScanActivity extends AppCompatActivity implements DecodeResultListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_demo);
         initView();
-        setSettings();
     }
 
     private void initView() {
@@ -54,19 +54,8 @@ public class ScanActivity extends AppCompatActivity implements DecodeResultListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        System.out.println("onDestroy");
-        HSMDecode.getInstance().removeHsmDecoder();
     }
 
-    public void setSettings() {
-        HSMDecode.getInstance().setHsmDecoder(this);
-        HSMDecode.getInstance().getHsmDecoder().enableSymbology(QR);
-        HSMDecode.getInstance().getHsmDecoder().enableSymbology(EAN13);
-        HSMDecode.getInstance().getHsmDecoder().enableSymbology(CODE128);
-        HSMDecode.getInstance().getHsmDecoder().enableSymbology(EAN8);
-        CameraManage.getInstance().setCameraManager(this);
-
-    }
 
     @Override
     public void onHSMDecodeResult(HSMDecodeResult[] hsmDecodeResults) {
@@ -118,21 +107,26 @@ public class ScanActivity extends AppCompatActivity implements DecodeResultListe
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        System.out.println("onStart");
-        CameraManage.getInstance().getCameraManager().openCamera();
-        HSMDecode.getInstance().getHsmDecoder().addResultListener(this);
-
+    protected void onPause() {
+        super.onPause();
+        if (HSMDecode.getInstance().getHsmDecoder() != null) {
+            HSMDecode.getInstance().getHsmDecoder().removeResultListener(this);
+            HSMDecode.getInstance().getHsmDecoder().releaseCameraConnection();
+        }
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        System.out.println("onStop");
-        CameraManage.getInstance().getCameraManager().closeCamera();
-        HSMDecode.getInstance().getHsmDecoder().removeResultListener(this);
-
+    protected void onResume() {
+        super.onResume();
+        HSMDecode.getInstance().setHsmDecoder(this);
+        if (HSMDecode.getInstance().getHsmDecoder() != null) {
+            HSMDecode.getInstance().getHsmDecoder().addResultListener(this);
+            HSMDecode.getInstance().getHsmDecoder().initCameraConnection();
+            Camera camera = HSMDecode.getInstance().getHsmDecoder().getCamera();
+            Camera.Parameters parameters = camera.getParameters();
+            parameters.set("iso-speed", "auto");
+            camera.setParameters(parameters);
+        }
     }
 
     @Override

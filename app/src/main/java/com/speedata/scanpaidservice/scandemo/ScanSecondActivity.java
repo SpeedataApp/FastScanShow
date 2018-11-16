@@ -1,5 +1,6 @@
 package com.speedata.scanpaidservice.scandemo;
 
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -39,21 +40,26 @@ public class ScanSecondActivity extends AppCompatActivity implements DecodeResul
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        CameraManage.getInstance().getCameraManager().openCamera();
-        HSMDecode.getInstance().getHsmDecoder().addResultListener(this);
-//        String decoderVersion = HSMDecode.getInstance().getHsmDecoder().getDecoderVersion();
-        String apiVersion = com.honeywell.barcode.HSMDecoder.getAPIVersion();
-        System.out.println("====version===="+apiVersion);
+    protected void onPause() {
+        super.onPause();
+        if (HSMDecode.getInstance().getHsmDecoder() != null) {
+            HSMDecode.getInstance().getHsmDecoder().removeResultListener(this);
+            HSMDecode.getInstance().getHsmDecoder().releaseCameraConnection();
+        }
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        CameraManage.getInstance().getCameraManager().closeCamera();
-        HSMDecode.getInstance().getHsmDecoder().removeResultListener(this);
-
+    protected void onResume() {
+        super.onResume();
+        HSMDecode.getInstance().setHsmDecoder(this);
+        if (HSMDecode.getInstance().getHsmDecoder() != null) {
+            HSMDecode.getInstance().getHsmDecoder().addResultListener(this);
+            HSMDecode.getInstance().getHsmDecoder().initCameraConnection();
+            Camera camera = HSMDecode.getInstance().getHsmDecoder().getCamera();
+            Camera.Parameters parameters = camera.getParameters();
+            parameters.set("iso-speed", "auto");
+            camera.setParameters(parameters);
+        }
     }
 
     @Override

@@ -65,6 +65,7 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
     private String expireDate;
     private TextView mTvStatus;
     private TextView mTvTelNum;
+    private boolean isActivateScan = false;
 
     @Override
     public void initData(Bundle bundle) {
@@ -195,14 +196,17 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
                 openAct(getApplicationContext(), PayActivity.class);
                 break;
             case R.id.btn_scan:
-                kProgressHUD = KProgressHUD.create(MainActivity.this)
-                        .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                        .setCancellable(false)
-                        .setAnimationSpeed(2)
-                        .setDimAmount(0.5f)
-                        .show();
-
-                mPresenter.activateScan(MainActivity.this, userName);
+                if (!isActivateScan) {
+                    kProgressHUD = KProgressHUD.create(MainActivity.this)
+                            .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                            .setCancellable(false)
+                            .setAnimationSpeed(2)
+                            .setDimAmount(0.5f)
+                            .show();
+                    mPresenter.activateScan(MainActivity.this, userName);
+                } else {
+                    openScanAct();
+                }
                 break;
 
             case R.id.btn_try:
@@ -266,6 +270,7 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
         if (kProgressHUD != null) {
             kProgressHUD.dismiss();
         }
+        isActivateScan = true;
         openAct(getApplicationContext(), ScanActivity.class);
     }
 
